@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processador de Excel - Seletor de Skin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        body.skin-1 {
+            background: #ffd89b;
+            background: -webkit-linear-gradient(to right, #19547b, #ffd89b);
+            background: linear-gradient(to right, #19547b, #ffd89b);
+        }
+
+        body.skin-2 {
+            background: #FFA17F;
+            background: -webkit-linear-gradient(to right, #00223E, #FFA17F);
+            background: linear-gradient(to right, #00223E, #FFA17F);
+        }
+
+        body.skin-3 {
+            background: #1F1C2C;
+            background: -webkit-linear-gradient(to right, #928DAB, #1F1C2C);
+            background: linear-gradient(to right, #928DAB, #1F1C2C);
+        }
+
+        body.skin-4 {
+            background: #403A3E;
+            background: -webkit-linear-gradient(to right, #BE5869, #403A3E);
+            background: linear-gradient(to right, #BE5869, #403A3E);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .settings-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .settings-icon:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .settings-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: white;
+        }
+
+        .skin-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: none;
+            min-width: 200px;
+            z-index: 1000;
+        }
+
+        .skin-dropdown.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .skin-dropdown h3 {
+            color: #333;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .skin-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .skin-option:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .skin-option.active {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+        }
+
+        .skin-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .skin-preview-1 {
+            background: linear-gradient(to right, #19547b, #ffd89b);
+        }
+
+        .skin-preview-2 {
+            background: linear-gradient(to right, #00223E, #FFA17F);
+        }
+
+        .skin-preview-3 {
+            background: linear-gradient(to right, #928DAB, #1F1C2C);
+        }
+
+        .skin-preview-4 {
+            background: linear-gradient(to right, #BE5869, #403A3E);
+        }
+
+        .skin-name {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .section-header:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.open {
+            max-height: 2000px;
+            padding-top: 20px;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .upload-area {
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-area input {
+            display: none;
+        }
+
+        .mapping-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .mapping-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .mapping-item label {
+            display: block;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .mapping-item select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: none;
+        }
+
+        .utilities {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .utility-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .utility-group label {
+            color: white;
+            font-weight: 700;
+        }
+
+        .utility-group select, .utility-group input {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+
+        table thead {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        table th {
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        table input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner-overlay.active {
+            display: flex;
+        }
+
+        .spinner-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .export-section {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            color: white;
+        }
+
+        .pagination button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 500;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="skin-1">
+    <div class="container">
+        <div class="header">
+            <div class="settings-icon" onclick="toggleSkinDropdown()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                </svg>
+            </div>
+            
+            <div class="skin-dropdown" id="skinDropdown">
+                <h3>🎨 Selecione o Tema</h3>
+                <div class="skin-option active" onclick="changeSkin(1)">
+                    <div class="skin-preview skin-preview-1"></div>
+                    <span class="skin-name">Azul & Dourado</span>
+                </div>
+                <div class="skin-option" onclick="changeSkin(2)">
+                    <div class="skin-preview skin-preview-2"></div>
+                    <span class="skin-name">Azul Escuro & Coral</span>
+                </div>
+                <div class="skin-option" onclick="changeSkin(3)">
+                    <div class="skin-preview skin-preview-3"></div>
+                    <span class="skin-name">Roxo & Cinza</span>
+                </div>
+                <div class="skin-option" onclick="changeSkin(4)">
+                    <div class="skin-preview skin-preview-4"></div>
+                    <span class="skin-name">Vinho & Cinza</span>
+                </div>
+            </div>
+            
+            <h1>📊 Processador de Excel</h1>
+            <p>Importe, processe e exporte seus dados com facilidade</p>
+        </div>
+
+        <div class="section glass">
+            <div class="section-header" onclick="toggleSection('upload')">
+                <span>📁 Importar Excel</span>
+                <span class="toggle-icon" id="toggle-upload">▼</span>
+            </div>
+            <div class="section-content" id="content-upload">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <h3>📤 Clique aqui ou arraste um arquivo Excel</h3>
+                    <p>Formatos suportados: .xlsx, .xls</p>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFileUpload(event)">
+                </div>
+                <div id="fileName" style="color: white; text-align: center; margin-top: 15px; font-weight: 700;"></div>
+            </div>
+        </div>
+
+        <div class="section glass">
+            <div class="section-header" onclick="toggleSection('mapping')">
+                <span>🔗 De-Para de Colunas</span>
+                <span class="toggle-icon" id="toggle-mapping">▼</span>
+            </div>
+            <div class="section-content" id="content-mapping">
+                <div class="mapping-container" id="mappingContainer">
+                    <!-- Mapeamento será gerado dinamicamente -->
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="processData()">✓ Processar Dados</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section glass">
+            <div class="section-header" onclick="toggleSection('processed')">
+                <span>📊 Dados Processados</span>
+                <span class="toggle-icon" id="toggle-processed">▼</span>
+            </div>
+            <div class="section-content" id="content-processed">
+                <div class="utilities">
+                    <div class="utility-group">
+                        <label>Alterar em Lote:</label>
+                        <select id="batchColumn">
+                            <option value="">Selecione a coluna</option>
+                        </select>
+                        <input type="text" id="batchValue" placeholder="Novo valor">
+                        <select id="batchTarget">
+                            <option value="empty">Vazias</option>
+                            <option value="all">Todas</option>
+                            <option value="selected">Selecionadas</option>
+                        </select>
+                        <button class="btn" onclick="applyBatchUpdate()">Aplicar</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="processedTable">
+                        <thead id="tableHeader"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button onclick="changePage(-1)">◀ Anterior</button>
+                    <span id="pageInfo">Página 1</span>
+                    <button onclick="changePage(1)">Próxima ▶</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="export-section glass">
+            <button class="btn btn-success" onclick="exportToTxt()">💾 Exportar para TXT</button>
+            <button class="btn" onclick="exportLayoutToTxt()">📄 LEIAUTE</button>
+        </div>
+    </div>
+
+    <div class="spinner-overlay" id="spinnerOverlay">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <h2 id="spinnerText">Processando...</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">0%</p>
+        </div>
+    </div>
+
+    <script>
+        let excelData = [];
+        let processedData = [];
+        let currentPage = 1;
+        const rowsPerPage = 15;
+        let filters = {};
+
+        const fieldMapping = [
+            { name: 'código', keywords: ['codigo', 'código', 'code', 'id'], visible: true },
+            { name: 'vazio1', keywords: [], visible: false },
+            { name: 'vazio2', keywords: [], visible: false },
+            { name: 'nome do sócio', keywords: ['nome', 'socio', 'sócio', 'name', 'partner'], visible: true },
+            { name: 'tipo inscrição', keywords: ['tipo', 'inscricao', 'inscrição', 'type'], visible: true },
+            { name: 'CPF/CNPJ', keywords: ['cpf', 'cnpj', 'inscricao', 'inscrição', 'documento'], visible: true },
+            { name: 'Estado', keywords: ['estado', 'uf', 'state'], visible: true },
+            { name: 'Pais', keywords: ['pais', 'país', 'country'], visible: false }, // Ocultado conforme solicitado
+            { name: 'Sexo', keywords: ['sexo', 'gender', 'sex'], visible: true }
+        ];
+
+        function toggleSkinDropdown() {
+            const dropdown = document.getElementById('skinDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('skinDropdown');
+            const settingsIcon = document.querySelector('.settings-icon');
+            
+            if (!dropdown.contains(event.target) && !settingsIcon.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        function changeSkin(skinNumber) {
+            document.body.className = `skin-${skinNumber}`;
+            document.querySelectorAll('.skin-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelectorAll('.skin-option')[skinNumber - 1].classList.add('active');
+            
+            // Fechar dropdown após seleção
+            setTimeout(() => {
+                document.getElementById('skinDropdown').classList.remove('active');
+            }, 300);
+        }
+
+        function toggleSection(sectionName) {
+            const content = document.getElementById(`content-${sectionName}`);
+            const toggle = document.getElementById(`toggle-${sectionName}`);
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        function showSpinner(text, duration = 0) {
+            const overlay = document.getElementById('spinnerOverlay');
+            const spinnerText = document.getElementById('spinnerText');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            spinnerText.textContent = text;
+            overlay.classList.add('active');
+            
+            if (duration > 0) {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    progressFill.style.width = progress + '%';
+                    progressText.textContent = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            overlay.classList.remove('active');
+                            progressFill.style.width = '0%';
+                            progressText.textContent = '0%';
+                        }, 500);
+                    }
+                }, duration / 10);
+            }
+        }
+
+        function hideSpinner() {
+            document.getElementById('spinnerOverlay').classList.remove('active');
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressText').textContent = '0%';
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showSpinner('Carregando arquivo Excel...', 2000);
+            document.getElementById('fileName').textContent = `📄 Arquivo: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                excelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                
+                setTimeout(() => {
+                    generateMapping();
+                    toggleSection('mapping');
+                }, 2000);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function generateMapping() {
+            const container = document.getElementById('mappingContainer');
+            container.innerHTML = '';
+            
+            if (excelData.length === 0) return;
+            
+            const headers = excelData[0];
+            
+            fieldMapping.forEach((field, index) => {
+                // Ocultar campos vazios
+                if (!field.visible) return;
+                
+                const div = document.createElement('div');
+                div.className = 'mapping-item';
+                
+                const label = document.createElement('label');
+                label.textContent = field.name;
+                
+                const select = document.createElement('select');
+                select.id = `mapping-${index}`;
+                
+                const emptyOption = document.createElement('option');
+                emptyOption.value = '';
+                
+                // Personaliza o texto da opção padrão
+                if (field.name === 'CPF/CNPJ') {
+                    emptyOption.textContent = '-- Informe Inscrição --';
+                } else {
+                    emptyOption.textContent = '-- Realizar Mapeamento --';
+                }
+                
+                select.appendChild(emptyOption);
+                
+                let autoSelected = false;
+                headers.forEach((header, headerIndex) => {
+                    const option = document.createElement('option');
+                    option.value = headerIndex;
+                    option.textContent = header;
+                    
+                    // Auto-mapeamento (Desativado conforme solicitado)
+                    // if (!autoSelected && field.keywords.length > 0) {
+                    //     const headerLower = String(header).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    //     const matched = field.keywords.some(keyword => 
+                    //         headerLower.includes(keyword.toLowerCase())
+                    //     );
+                    //     if (matched) {
+                    //         option.selected = true;
+                    //         autoSelected = true;
+                    //     }
+                    // }
+                    
+                    select.appendChild(option);
+                });
+                
+                div.appendChild(label);
+                div.appendChild(select);
+                container.appendChild(div);
+            });
+        }
+
+        function processData() {
+            showSpinner('Processando dados...', 1500);
+            
+            setTimeout(() => {
+                processedData = [];
+                
+                for (let i = 1; i < excelData.length; i++) {
+                    const row = {};
+                    
+                    fieldMapping.forEach((field, index) => {
+                        const select = document.getElementById(`mapping-${index}`);
+                        let columnIndex = '';
+                        
+                        // Para campos visíveis, pegar do select
+                        if (field.visible && select) {
+                            columnIndex = select.value;
+                        }
+                        
+                        if (columnIndex === '') {
+                            // Valores padrão para campos especiais
+                            if (field.name === 'tipo inscrição') {
+                                row[field.name] = '2';
+                            } else if (field.name === 'Pais') {
+                                row[field.name] = '30 Brasil';
+                            } else {
+                                row[field.name] = '';
+                            }
+                        } else {
+                            let value = excelData[i][columnIndex] || '';
+                            
+                            // Tratamento especial para UF
+                            if (field.name === 'Estado' && value.length > 2) {
+                                value = value.substring(0, 2).toUpperCase();
+                            }
+                            
+                            // Tratamento especial para Sexo
+                            if (field.name === 'Sexo') {
+                                value = String(value).toUpperCase();
+                                if (value !== 'M' && value !== 'F') {
+                                    value = '';
+                                }
+                            }
+                            
+                            row[field.name] = value;
+                        }
+                    });
+                    
+                    processedData.push(row);
+                }
+                
+                populateBatchColumn();
+                renderTable();
+                toggleSection('processed');
+            }, 1500);
+        }
+
+        function populateBatchColumn() {
+            const select = document.getElementById('batchColumn');
+            select.innerHTML = '<option value="">Selecione a coluna</option>';
+            
+            fieldMapping.forEach(field => {
+                const option = document.createElement('option');
+                option.value = field.name;
+                option.textContent = field.name;
+                select.appendChild(option);
+            });
+        }
+
+        function renderTable() {
+            const header = document.getElementById('tableHeader');
+            const body = document.getElementById('tableBody');
+            
+            header.innerHTML = '';
+            body.innerHTML = '';
+            
+            if (processedData.length === 0) return;
+            
+            // Cabeçalho
+            const headerRow = document.createElement('tr');
+            const checkboxTh = document.createElement('th');
+            checkboxTh.innerHTML = '<input type="checkbox" id="selectAll" onchange="toggleSelectAll()">';
+            headerRow.appendChild(checkboxTh);
+            
+            fieldMapping.forEach(field => {
+                if (!field.visible) return; // Ocultar colunas não visíveis
+                
+                const th = document.createElement('th');
+                const filterValue = filters[field.name] || ''; // Recupera o valor do filtro
+                th.innerHTML = `
+                    <div>${field.name}</div>
+                    <input type="text" class="filter-input" placeholder="Filtrar..." value="${filterValue}" onkeyup="applyFilter('${field.name}', this.value)">
+                `;
+                headerRow.appendChild(th);
+            });
+            
+            header.appendChild(headerRow);
+            
+            // Dados filtrados
+            let filteredData = processedData.filter(row => {
+                for (let key in filters) {
+                    if (filters[key] && !String(row[key]).toLowerCase().includes(filters[key].toLowerCase())) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            
+            // Paginação
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = filteredData.slice(start, end);
+            
+            pageData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                
+                const checkboxTd = document.createElement('td');
+                checkboxTd.innerHTML = `<input type="checkbox" class="row-checkbox" data-index="${start + index}">`;
+                tr.appendChild(checkboxTd);
+                
+                fieldMapping.forEach(field => {
+                    if (!field.visible) return; // Ocultar colunas não visíveis
+                    
+                    const td = document.createElement('td');
+                    td.textContent = row[field.name];
+                    td.contentEditable = true;
+                    td.addEventListener('blur', function() {
+                        processedData[start + index][field.name] = this.textContent;
+                    });
+                    tr.appendChild(td);
+                });
+                
+                body.appendChild(tr);
+            });
+            
+            // Atualizar informação de página
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            document.getElementById('pageInfo').textContent = `Página ${currentPage} de ${totalPages} (${filteredData.length} registros)`;
+        }
+
+        function applyFilter(column, value) {
+            filters[column] = value;
+            currentPage = 1;
+            renderTable();
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(processedData.length / rowsPerPage);
+            const newPage = currentPage + direction;
+            
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderTable();
+            }
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        }
+
+        function applyBatchUpdate() {
+            const column = document.getElementById('batchColumn').value;
+            const value = document.getElementById('batchValue').value;
+            const target = document.getElementById('batchTarget').value;
+            
+            if (!column) {
+                alert('Selecione uma coluna!');
+                return;
+            }
+            
+            showSpinner('Aplicando alterações em lote...', 1000);
+            
+            setTimeout(() => {
+                const selectedIndexes = Array.from(document.querySelectorAll('.row-checkbox:checked'))
+                    .map(cb => parseInt(cb.dataset.index));
+                
+                processedData.forEach((row, index) => {
+                    if (target === 'all') {
+                        row[column] = value;
+                    } else if (target === 'empty' && !row[column]) {
+                        row[column] = value;
+                    } else if (target === 'selected' && selectedIndexes.includes(index)) {
+                        row[column] = value;
+                    }
+                });
+                
+                renderTable();
+                document.getElementById('batchValue').value = '';
+            }, 1000);
+        }
+
+        function exportLayoutToTxt() {
+            const layoutContent = `11\tGESOCIOS\t1\ti_socio\tCodigo socio   (i_socio)\tinteger\t1\t7\t\tI\t\t0
+11\tGESOCIOS\t2\torigem_reg\tOrigem do registro 0 - Sistema, 1 - Imp. Tabelas, 2 - Imp. Layout, 3- Imp. Tabelas Concorrentes   (origem_reg)\ttinyint\t1\t3\t\tF\t1\t0
+11\tGESOCIOS\t3\tRESPONSAVEL_LEGAL_EMPRESA_JUNTO_BASE_RFB\tÉ responsável legal da empresa junto as bases da RFB   (RESPONSAVEL_LEGAL_EMPRESA_JUNTO_BASE_RFB)\tchar\t1\t1\t\tF\tN\t0
+11\tGESOCIOS\t4\tnome\tNome   (nome)\tchar\t1\t60\t\tI\t\t0
+11\tGESOCIOS\t5\ttipo_insc\tTipo de inscricao (1 - CNPJ/2 - CPF)   (tipo_insc)\ttinyint\t1\t3\t\tF\t2\t0
+11\tGESOCIOS\t6\tinscricao\tCPF ou CNPJ   (inscricao)\tchar\t1\t14\t\tI\t\t0
+11\tGESOCIOS\t7\tuf\tUF   (uf)\tchar\t1\t2\t\tI\t\t0
+11\tGESOCIOS\t8\tcodigo_pais\tCodigo pais   (codigo_pais)\tinteger\t1\t7\t\tF\t30\t0
+11\tGESOCIOS\t9\tsexo\tSexo (M - Masculino/F - Feminino)   (sexo)\tchar\t1\t1\t\tI\t\t0`;
+            
+            const blob = new Blob([layoutContent], { type: 'text/plain;charset=windows-1252' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'layout_gesocios.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('arquivo salvo com sucesso!');
+        }
+
+        function exportToTxt() {
+            if (processedData.length === 0) {
+                alert('Não há dados para exportar!');
+                return;
+            }
+            
+            showSpinner('Exportando para TXT...', 2000);
+            
+            setTimeout(() => {
+                let content = '';
+                
+                processedData.forEach(row => {
+                    const values = fieldMapping.map(field => row[field.name] || '');
+                    content += values.join(';') + '\n';
+                });
+                
+                // Remover espaços vazios no final
+                content = content.trimEnd();
+                
+                // Criar blob com encoding ANSI (Windows-1252)
+                const blob = new Blob([content], { type: 'text/plain;charset=windows-1252' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'relacao_socios_importar.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 2000);
+        }
+
+        // Inicializar com primeira seção aberta
+        toggleSection('upload');
+    </script>
+</body>
+</html>
